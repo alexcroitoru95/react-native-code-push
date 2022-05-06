@@ -52,6 +52,11 @@ gradle.projectsEvaluated {
             def reactBundleTask = variant.bundleJsAndAssets
             jsBundleDir = reactBundleTask.generatedAssetsFolders[0].absolutePath
             resourcesDir = reactBundleTask.generatedResFolders[0].absolutePath
+			
+			  //add these 2 lines
+            new File(jsBundleDir).mkdirs()
+            new File(resourcesDir).mkdirs()
+			
             jsBundleFile = file("$jsBundleDir/$bundleAssetName")
 
             generateBundledResourcesHash = tasks.create(
@@ -62,10 +67,7 @@ gradle.projectsEvaluated {
                 enabled config."bundleIn${targetName}" ||
                 config."bundleIn${variant.buildType.name.capitalize()}" ?:
                 targetName.toLowerCase().contains("release")
-            }
-            
-            runBefore("merge${targetName}Resources", generateBundledResourcesHash)
-            runBefore("merge${targetName}Assets", generateBundledResourcesHash)   
+            }   
         } else {
             def jsBundleDirConfigName = "jsBundleDir${targetName}"
             jsBundleDir = elvisFile(config."$jsBundleDirConfigName") ?:
